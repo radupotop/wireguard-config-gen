@@ -1,3 +1,4 @@
+import itertools
 from ipaddress import IPv4Interface
 from pathlib import Path
 
@@ -19,16 +20,15 @@ def parseyaml():
     yaml_contents = loadyaml('interfaces.yaml')
     cfgdata = YamlConfig.model_validate(yaml_contents)
     prefixlen = cfgdata.DynStartIP.network.prefixlen
-    cnt = 1
+    cnt = itertools.count()
     for ifname, ifdata in cfgdata.Machines.items():
         # print('orig', ifname, ifdata)
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()
         if not ifdata.Interface.Address:
             ifdata.Interface.Address = IPv4Interface(
-                f"{cfgdata.DynStartIP.ip + cnt}/{prefixlen}"
+                f"{cfgdata.DynStartIP.ip + next(cnt)}/{prefixlen}"
             )
-            cnt += 1
         if not ifdata.Peer:
             ifdata.Peer = PeerModel()
         if not ifdata.Peer.AllowedIPs:
