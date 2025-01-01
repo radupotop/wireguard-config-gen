@@ -1,5 +1,3 @@
-import configparser
-import io
 import itertools
 from ipaddress import IPv4Interface
 from pathlib import Path
@@ -25,6 +23,12 @@ def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig
 
 
 def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
+    """
+    I know this is not ideal but ConfigParser has too many limitations. e.g.:
+      * Can't have multiple [Peer] sections with the same name
+      * Comments are badly formatted
+      * Can't have custom comments outside of a section
+    """
     output = ''
     sep = '\n'
     comment = '## '
