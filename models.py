@@ -1,4 +1,4 @@
-from ipaddress import IPv4Network
+from ipaddress import IPv4Interface
 
 from pydantic import BaseModel
 
@@ -9,13 +9,13 @@ class Keypair(BaseModel):
 
 
 class InterfaceModel(BaseModel):
-    Address: IPv4Network
+    Address: IPv4Interface
     PrivateKey: str | None = None
     ListenPort: int | None = None
 
 
 class PeerModel(BaseModel):
-    AllowedIPs: list[IPv4Network]
+    AllowedIPs: list[IPv4Interface]
     ## AllowedIPs: 0.0.0.0/0, ::/0 # Forward all traffic through this server
     PublicKey: str | None = None
     Endpoint: str | None = None
