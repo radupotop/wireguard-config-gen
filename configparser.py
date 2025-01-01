@@ -1,6 +1,7 @@
 import itertools
 from ipaddress import IPv4Interface
 from pathlib import Path
+from pprint import pprint
 
 import yaml
 from genkeys import gen_keypair, gen_psk
@@ -44,10 +45,10 @@ def parseyaml():
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
-    print(cfgdata)
-    Path('result.yaml').write_text(
-        yaml.dump(cfgdata.model_dump(mode='json', exclude_none=True))
-    )
+
+    raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
+    pprint(raw_cfgdata)
+    Path('result.yaml').write_text(yaml.dump(raw_cfgdata))
 
 
 parseyaml()
