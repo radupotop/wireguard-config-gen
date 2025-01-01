@@ -47,8 +47,9 @@ def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
         output += '[Peer]' + sep
         output += comment + ifname + sep
         for key, val in peer:
-            _val = ', '.join(map(str, val)) if isinstance(val, list) else str(val)
-            output += key + equals + _val + sep
+            if val:
+                _val = ', '.join(map(str, val)) if isinstance(val, list) else str(val)
+                output += key + equals + _val + sep
         output += sep
 
     print(output)
