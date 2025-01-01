@@ -1,5 +1,6 @@
 import itertools
 from datetime import UTC, datetime
+from functools import cache
 from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
@@ -8,6 +9,11 @@ import yaml
 from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, WireguardConfig, YamlConfig
 from yaml.loader import SafeLoader
+
+
+@cache
+def now():
+    return str(datetime.now(UTC))
 
 
 def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig:
@@ -34,7 +40,7 @@ def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
     sep = '\n'
     comment = '## '
     equals = ' = '
-    output = comment + 'Generated ' + str(datetime.now(UTC)) + sep + sep
+    output = comment + 'Generated ' + now() + sep + sep
 
     # Add Interface section
     output += '[Interface]' + sep
