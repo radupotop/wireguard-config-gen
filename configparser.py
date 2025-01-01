@@ -1,3 +1,4 @@
+from ipaddress import IPv4Interface
 from pathlib import Path
 
 import yaml
@@ -20,7 +21,10 @@ def parseyaml():
     for ifname, ifdata in cfgdata.Machines.items():
         # print('orig', ifname, ifdata)
         if not ifdata.Peer:
-            ifdata.Peer = PeerModel(AllowedIPs=[ifdata.Interface.Address.ip])
+            ifdata.Peer = PeerModel()
+        if not ifdata.Peer.AllowedIPs:
+            # cast Interface Address to /32
+            ifdata.Peer.AllowedIPs = [IPv4Interface(ifdata.Interface.Address.ip)]
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private

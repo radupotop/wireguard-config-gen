@@ -19,8 +19,12 @@ class InterfaceModel(BaseModel):
 
 
 class PeerModel(BaseModel):
-    AllowedIPs: list[IPv4Interface]
-    ## AllowedIPs: 0.0.0.0/0, ::/0 # Forward all traffic through this server
+    """
+    The Peer model is entirely optional since it can either be deduced from the Interface
+    data or get generated at runtime.
+    """
+
+    AllowedIPs: list[IPv4Interface] | None = None
     PublicKey: str | None = None
     Endpoint: str | None = None
     PersistentKeepalive: int | None = None
