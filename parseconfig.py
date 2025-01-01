@@ -24,10 +24,11 @@ def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig
 
 def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
     """
-    I know this is not ideal but ConfigParser has too many limitations. e.g.:
+    This is not ideal but ConfigParser has too many limitations. e.g.:
       * Can't have multiple [Peer] sections with the same name
       * Comments are badly formatted
       * Can't have custom comments outside of a section
+      * Keys are cast to lowercase by default
     """
     output = ''
     sep = '\n'
