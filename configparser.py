@@ -45,7 +45,9 @@ def parseyaml():
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
     print(cfgdata)
-    Path('result.yaml').write_text(yaml.dump(cfgdata.model_dump(mode='json')))
+    Path('result.yaml').write_text(
+        yaml.dump(cfgdata.model_dump(mode='json', exclude_none=True))
+    )
 
 
 parseyaml()
