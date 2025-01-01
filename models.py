@@ -13,7 +13,7 @@ class Keypair(BaseModel):
 
 
 class InterfaceModel(BaseModel):
-    Address: IPv4Interface
+    Address: IPv4Interface | None = None
     PrivateKey: str | None = None
     ListenPort: int | None = None
 
@@ -31,9 +31,10 @@ class PeerModel(BaseModel):
 
 
 class HostModel(BaseModel):
-    Interface: InterfaceModel
+    Interface: InterfaceModel | None = None
     Peer: PeerModel | None = None
 
 
 class YamlConfig(BaseModel):
+    DynStartIP: IPv4Interface
     Machines: dict[str, HostModel]

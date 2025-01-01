@@ -3,7 +3,7 @@ from pathlib import Path
 
 import yaml
 from genkeys import gen_keypair
-from models import PeerModel, YamlConfig
+from models import InterfaceModel, PeerModel, YamlConfig
 from yaml.loader import SafeLoader
 
 
@@ -18,8 +18,17 @@ def loadyaml(filepath: str):
 def parseyaml():
     yaml_contents = loadyaml('interfaces.yaml')
     cfgdata = YamlConfig.model_validate(yaml_contents)
+    prefixlen = cfgdata.DynStartIP.network.prefixlen
+    cnt = 1
     for ifname, ifdata in cfgdata.Machines.items():
         # print('orig', ifname, ifdata)
+        if not ifdata.Interface:
+            ifdata.Interface = InterfaceModel()
+        if not ifdata.Interface.Address:
+            ifdata.Interface.Address = IPv4Interface(
+                f"{cfgdata.DynStartIP.ip + cnt}/{prefixlen}"
+            )
+            cnt += 1
         if not ifdata.Peer:
             ifdata.Peer = PeerModel()
         if not ifdata.Peer.AllowedIPs:
