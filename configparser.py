@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 from genkeys import gen_keypair
-from models import YamlConfig
+from models import PeerModel, YamlConfig
 from yaml.loader import SafeLoader
 
 
@@ -15,9 +15,12 @@ def loadyaml(filepath: str):
 
 
 def parseyaml():
-    cfgdata = YamlConfig.model_validate(loadyaml('interfaces.yaml'))
+    yaml_contents = loadyaml('interfaces.yaml')
+    cfgdata = YamlConfig.model_validate(yaml_contents)
     for ifname, ifdata in cfgdata.Machines.items():
         # print('orig', ifname, ifdata)
+        if not ifdata.Peer:
+            ifdata.Peer = PeerModel(AllowedIPs=[ifdata.Interface.Address.ip])
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private

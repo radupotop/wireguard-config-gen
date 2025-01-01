@@ -27,8 +27,8 @@ class PeerModel(BaseModel):
 
 
 class HostModel(BaseModel):
-    Interface: InterfaceModel | None
-    Peer: PeerModel | None
+    Interface: InterfaceModel
+    Peer: PeerModel | None = None
 
 
 class YamlConfig(BaseModel):
