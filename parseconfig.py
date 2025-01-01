@@ -1,5 +1,5 @@
 import itertools
-from datetime import datetime
+from datetime import UTC, datetime
 from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
@@ -34,7 +34,7 @@ def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
     sep = '\n'
     comment = '## '
     equals = ' = '
-    output = comment + 'Generated ' + str(datetime.utcnow()) + sep + sep
+    output = comment + 'Generated ' + str(datetime.now(UTC)) + sep + sep
 
     # Add Interface section
     output += '[Interface]' + sep
