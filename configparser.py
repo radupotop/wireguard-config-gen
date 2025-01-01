@@ -22,18 +22,20 @@ def parseyaml():
     prefixlen = cfgdata.DynStartIP.network.prefixlen
     cnt = itertools.count()
     for ifname, ifdata in cfgdata.Machines.items():
-        # print('orig', ifname, ifdata)
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()
+        if not ifdata.Peer:
+            ifdata.Peer = PeerModel()
+        # Set a dynamic Interface address if none specified
         if not ifdata.Interface.Address:
             ifdata.Interface.Address = IPv4Interface(
                 f"{cfgdata.DynStartIP.ip + next(cnt)}/{prefixlen}"
             )
-        if not ifdata.Peer:
-            ifdata.Peer = PeerModel()
+        # Set the Peer allowed IP to be the same as the Interface address
+        # if none specified, but with prefixlen /32.
         if not ifdata.Peer.AllowedIPs:
-            # cast Interface Address to /32
             ifdata.Peer.AllowedIPs = [IPv4Interface(ifdata.Interface.Address.ip)]
+        # Generate keypair if none specified
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private
