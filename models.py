@@ -4,6 +4,10 @@ from pydantic import BaseModel
 
 
 class Keypair(BaseModel):
+    """
+    A private-public keypair.
+    """
+
     public: str
     private: str
 
@@ -25,3 +29,7 @@ class PeerModel(BaseModel):
 class HostModel(BaseModel):
     Interface: InterfaceModel | None
     Peer: PeerModel | None
+
+
+class YamlConfig(BaseModel):
+    Machines: dict[str, HostModel]
