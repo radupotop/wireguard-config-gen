@@ -1,4 +1,5 @@
 import itertools
+from datetime import datetime
 from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
@@ -30,10 +31,10 @@ def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
       * Can't have custom comments outside of a section
       * Keys are cast to lowercase by default
     """
-    output = ''
     sep = '\n'
     comment = '## '
     equals = ' = '
+    output = comment + 'Generated ' + str(datetime.utcnow()) + sep + sep
 
     # Add Interface section
     output += '[Interface]' + sep
