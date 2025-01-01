@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 
 
+class Keypair(BaseModel):
+    public: str
+    private: str
+
+
 class InterfaceModel(BaseModel):
     Address: str
     Netmask: int

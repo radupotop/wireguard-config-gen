@@ -5,7 +5,7 @@ import wgtools
 import yaml
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
-from models import HostModel, InterfaceModel, PeerModel
+from models import HostModel, InterfaceModel, Keypair, PeerModel
 from yaml.loader import SafeLoader
 
 interfaces_yaml = Path('interfaces.yaml')
@@ -29,10 +29,10 @@ def parseyaml():
         print(ifname, HostModel.parse_obj(ifdata))
 
 
-parseyaml()
+# parseyaml()
 
 
-def gen_keypair():
+def gen_keypair() -> Keypair:
     """
     Generate a private-public keypair natively with Python.
     """
@@ -59,4 +59,4 @@ def gen_keypair():
     public_key_base64 = base64.b64encode(public_key_bytes).decode('utf-8').strip()
 
     # Return the keys in base64 encoding
-    return private_key_base64, public_key_base64
+    return Keypair(public=public_key_base64, private=private_key_base64)
