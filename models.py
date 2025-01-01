@@ -40,3 +40,8 @@ class YamlConfig(BaseModel):
     DynStartIP: IPv4Interface
     PresharedKey: str | None = None
     Machines: dict[str, HostModel]
+
+
+class WireguardConfig(BaseModel):
+    Interface: InterfaceModel | None = None
+    Peers: list[PeerModel] = []

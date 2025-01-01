@@ -5,8 +5,20 @@ from pprint import pprint
 
 import yaml
 from genkeys import gen_keypair, gen_psk
-from models import InterfaceModel, PeerModel, YamlConfig
+from models import InterfaceModel, PeerModel, WireguardConfig, YamlConfig
 from yaml.loader import SafeLoader
+
+
+def parse_to_wg_config(start_with: str, cfgdata: YamlConfig) -> WireguardConfig:
+    wgconf = WireguardConfig()
+    wgconf.Interface = cfgdata.Machines[start_with].Interface
+
+    for ifname, ifdata in cfgdata.Machines.items():
+        if ifname != start_with:
+            wgconf.Peers.append(ifdata.Peer)
+
+    pprint(wgconf.model_dump(mode='json', exclude_none=True))
+    return wgconf
 
 
 def loadyaml(filepath: str):
@@ -49,6 +61,8 @@ def parseyaml():
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     pprint(raw_cfgdata)
     Path('result.yaml').write_text(yaml.dump(raw_cfgdata))
+
+    parse_to_wg_config('S23', cfgdata)
 
 
 parseyaml()
