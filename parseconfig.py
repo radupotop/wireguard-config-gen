@@ -25,35 +25,30 @@ def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig
 
 
 def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
-    parser = configparser.ConfigParser(allow_no_value=True)
+    output = ''
+    sep = '\n'
+    comment = '## '
+    equals = ' = '
 
     # Add Interface section
-    parser.add_section('Interface')
-    parser.set('Interface', '##', main_ifname)
-    for key, value in wgconfig.Interface:
-        if value:
-            parser.set('Interface', key.title(), str(value))
+    output += '[Interface]' + sep
+    output += comment + main_ifname + sep
+    for key, val in wgconfig.Interface:
+        if val:
+            output += key + equals + str(val) + sep
+    output += sep
 
     # Add Peer sections
-    cnt = itertools.count(1)
     for ifname, peer in wgconfig.Peers.items():
-        section_name = f'Peer__{next(cnt)}'
-        parser.add_section(section_name)
-        parser.set(section_name, '##', ifname)
-        for key, value in peer:
-            if isinstance(value, list):
-                parser.set(section_name, key.title(), ', '.join(map(str, value)))
-            elif value:
-                parser.set(section_name, key.title(), str(value))
+        output += '[Peer]' + sep
+        output += comment + ifname + sep
+        for key, val in peer:
+            _val = ', '.join(map(str, val)) if isinstance(val, list) else str(val)
+            output += key + equals + _val + sep
+        output += sep
 
-    # Write to a string
-    ini_file = io.StringIO()
-    parser.write(ini_file)
-    ini_str = ini_file.getvalue().replace('## =', '##')
-
-    print(ini_str)
-
-    return ini_str
+    print(output)
+    return output
 
 
 def loadyaml(filepath: str):
