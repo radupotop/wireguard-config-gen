@@ -28,6 +28,7 @@ class PeerModel(BaseModel):
     PublicKey: str | None = None
     Endpoint: str | None = None
     PersistentKeepalive: int | None = None
+    PresharedKey: str | None = None
 
 
 class HostModel(BaseModel):
@@ -37,4 +38,5 @@ class HostModel(BaseModel):
 
 class YamlConfig(BaseModel):
     DynStartIP: IPv4Interface
+    PresharedKey: str | None = None
     Machines: dict[str, HostModel]

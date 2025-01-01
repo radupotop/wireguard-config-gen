@@ -3,7 +3,7 @@ from ipaddress import IPv4Interface
 from pathlib import Path
 
 import yaml
-from genkeys import gen_keypair
+from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, YamlConfig
 from yaml.loader import SafeLoader
 
@@ -21,6 +21,8 @@ def parseyaml():
     cfgdata = YamlConfig.model_validate(yaml_contents)
     prefixlen = cfgdata.DynStartIP.network.prefixlen
     cnt = itertools.count()
+    if not cfgdata.PresharedKey:
+        cfgdata.PresharedKey = gen_psk()
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()
@@ -35,6 +37,8 @@ def parseyaml():
         # if none specified, but with prefixlen /32.
         if not ifdata.Peer.AllowedIPs:
             ifdata.Peer.AllowedIPs = [IPv4Interface(ifdata.Interface.Address.ip)]
+        if not ifdata.Peer.PresharedKey:
+            ifdata.Peer.PresharedKey = cfgdata.PresharedKey
         # Generate keypair if none specified
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
