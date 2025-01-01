@@ -10,18 +10,17 @@ class InterfaceModel(BaseModel):
     Address: str
     Netmask: int
     ListenPort: int
-    PrivateKey: str | None
+    PrivateKey: str | None = None
 
 
 class PeerModel(BaseModel):
     AllowedIPs: str
     ## AllowedIPs: 0.0.0.0/0, ::/0 # Forward all traffic through this server
     Netmask: int
-    Endpoint: str | None
-    Port: int
-    PersistentKeepalive: int | None
-    PublicKey: str | None
-    PresharedKey: str | None
+    PublicKey: str | None = None
+    EndpointHost: str | None = None
+    EndpointPort: int | None = None
+    PersistentKeepalive: int | None = None
 
 
 class HostModel(BaseModel):
