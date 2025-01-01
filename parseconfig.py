@@ -24,25 +24,25 @@ def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig
     return wgconf
 
 
-def wg_config_to_ini(main_ifname: str, config: WireguardConfig) -> str:
+def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
     parser = configparser.ConfigParser(allow_no_value=True)
 
     # Add Interface section
     parser.add_section('Interface')
     parser.set('Interface', '##', main_ifname)
-    for key, value in config.Interface:
+    for key, value in wgconfig.Interface:
         if value:
             parser.set('Interface', key.title(), str(value))
 
     # Add Peer sections
     cnt = itertools.count(1)
-    for ifname, peer in config.Peers.items():
+    for ifname, peer in wgconfig.Peers.items():
         section_name = f'Peer__{next(cnt)}'
         parser.add_section(section_name)
         parser.set(section_name, '##', ifname)
         for key, value in peer:
             if isinstance(value, list):
-                parser.set(section_name, key.title(), ','.join(map(str, value)))
+                parser.set(section_name, key.title(), ', '.join(map(str, value)))
             elif value:
                 parser.set(section_name, key.title(), str(value))
 
@@ -98,9 +98,9 @@ def parseyaml():
     Path('result.yaml').write_text(yaml.dump(raw_cfgdata))
 
     for ifname in cfgdata.Machines.keys():
-        print(ifname)
         wgconf = parse_to_wg_config(ifname, cfgdata)
         ini = wg_config_to_ini(ifname, wgconf)
+        (Path('output') / ifname).with_suffix('.conf').write_text(ini)
 
 
 parseyaml()
