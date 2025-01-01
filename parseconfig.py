@@ -1,3 +1,5 @@
+import configparser
+import io
 import itertools
 from ipaddress import IPv4Interface
 from pathlib import Path
@@ -9,16 +11,49 @@ from models import InterfaceModel, PeerModel, WireguardConfig, YamlConfig
 from yaml.loader import SafeLoader
 
 
-def parse_to_wg_config(start_with: str, cfgdata: YamlConfig) -> WireguardConfig:
-    wgconf = WireguardConfig()
-    wgconf.Interface = cfgdata.Machines[start_with].Interface
+def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig:
+    wgconf = WireguardConfig(
+        Interface=cfgdata.Machines[main_ifname].Interface,
+    )
 
     for ifname, ifdata in cfgdata.Machines.items():
-        if ifname != start_with:
-            wgconf.Peers.append(ifdata.Peer)
+        if ifname != main_ifname:
+            wgconf.Peers[ifname] = ifdata.Peer
 
-    pprint(wgconf.model_dump(mode='json', exclude_none=True))
+    # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf
+
+
+def wg_config_to_ini(main_ifname: str, config: WireguardConfig) -> str:
+    parser = configparser.ConfigParser(allow_no_value=True)
+
+    # Add Interface section
+    parser.add_section('Interface')
+    parser.set('Interface', '##', main_ifname)
+    for key, value in config.Interface:
+        if value:
+            parser.set('Interface', key.title(), str(value))
+
+    # Add Peer sections
+    cnt = itertools.count(1)
+    for ifname, peer in config.Peers.items():
+        section_name = f'Peer__{next(cnt)}'
+        parser.add_section(section_name)
+        parser.set(section_name, '##', ifname)
+        for key, value in peer:
+            if isinstance(value, list):
+                parser.set(section_name, key.title(), ','.join(map(str, value)))
+            elif value:
+                parser.set(section_name, key.title(), str(value))
+
+    # Write to a string
+    ini_file = io.StringIO()
+    parser.write(ini_file)
+    ini_str = ini_file.getvalue().replace('## =', '##')
+
+    print(ini_str)
+
+    return ini_str
 
 
 def loadyaml(filepath: str):
@@ -62,7 +97,10 @@ def parseyaml():
     pprint(raw_cfgdata)
     Path('result.yaml').write_text(yaml.dump(raw_cfgdata))
 
-    parse_to_wg_config('S23', cfgdata)
+    for ifname in cfgdata.Machines.keys():
+        print(ifname)
+        wgconf = parse_to_wg_config(ifname, cfgdata)
+        ini = wg_config_to_ini(ifname, wgconf)
 
 
 parseyaml()

@@ -43,5 +43,5 @@ class YamlConfig(BaseModel):
 
 
 class WireguardConfig(BaseModel):
-    Interface: InterfaceModel | None = None
-    Peers: list[PeerModel] = []
+    Interface: InterfaceModel
+    Peers: dict[str, PeerModel] = dict()
