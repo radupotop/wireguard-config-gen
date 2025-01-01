@@ -14,6 +14,7 @@ def loadyaml():
 def parseyaml():
     cfgdata = loadyaml()
     for ifname, ifdata in cfgdata['Machines'].items():
+        print(ifname, ifdata)
         print(ifname, HostModel.model_validate(ifdata))
 
 
