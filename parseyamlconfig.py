@@ -22,8 +22,19 @@ def loadyaml(filepath: str):
     return yaml.load(yaml_file.read_bytes(), Loader=SafeLoader)
 
 
-def parseyaml(filepath: str):
-    yaml_contents = loadyaml(filepath)
+def merge_yaml(*filepaths: str) -> dict:
+    """
+    Merge multiple YAML files.
+    Latter files will inherit and override the former files.
+    """
+    merged_data = dict()
+    for _fpath in filepaths:
+        _fcontent = loadyaml(_fpath)
+        merged_data.update(_fcontent)
+    return merged_data
+
+
+def parseyaml(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
     prefixlen = cfgdata.DynStartIP.network.prefixlen
     cnt = itertools.count()
@@ -61,4 +72,5 @@ def parseyaml(filepath: str):
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
 
 
-parseyaml('output/result.yaml')
+yaml_contents = merge_yaml('interfaces.yaml', 'output/result.yaml')
+parseyaml(yaml_contents)
