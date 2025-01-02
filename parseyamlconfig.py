@@ -22,6 +22,19 @@ def load_yaml(filepath: str):
     return yaml.load(yaml_file.read_bytes(), Loader=SafeLoader)
 
 
+def recursive_update(dict1, dict2):
+    """
+    Recursively update dictionary `dict1` with `dict2`.
+    """
+    for key, value in dict2.items():
+        if isinstance(value, dict) and key in dict1 and isinstance(dict1[key], dict):
+            # If both values are dictionaries, recurse
+            recursive_update(dict1[key], value)
+        else:
+            # Otherwise, overwrite dict1's key with dict2's value
+            dict1[key] = value
+
+
 def merge_yaml(*filepaths: str) -> dict:
     """
     Merge multiple YAML files.
@@ -30,7 +43,7 @@ def merge_yaml(*filepaths: str) -> dict:
     merged_data = dict()
     for _fpath in filepaths:
         _fcontent = load_yaml(_fpath)
-        merged_data.update(_fcontent)
+        recursive_update(merged_data, _fcontent)
     return merged_data
 
 
@@ -72,5 +85,10 @@ def parse_yaml_config(yaml_contents: dict):
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
 
 
-yaml_contents = merge_yaml('interfaces.yaml', 'output/result.yaml')
+yaml_contents = merge_yaml(
+    'interfaces.yaml',
+    'output/result.yaml',
+)
+pprint(yaml_contents)
+
 parse_yaml_config(yaml_contents)
