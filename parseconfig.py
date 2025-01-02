@@ -10,6 +10,8 @@ from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, WireguardConfig, YamlConfig
 from yaml.loader import SafeLoader
 
+OUTDIR = Path('output/')
+
 
 @cache
 def now():
@@ -72,8 +74,8 @@ def loadyaml(filepath: str):
     return yaml.load(yaml_file.read_bytes(), Loader=SafeLoader)
 
 
-def parseyaml():
-    yaml_contents = loadyaml('interfaces.yaml')
+def parseyaml(filepath: str):
+    yaml_contents = loadyaml(filepath)
     cfgdata = YamlConfig.model_validate(yaml_contents)
     prefixlen = cfgdata.DynStartIP.network.prefixlen
     cnt = itertools.count()
@@ -103,12 +105,12 @@ def parseyaml():
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     pprint(raw_cfgdata)
-    Path('result.yaml').write_text(yaml.dump(raw_cfgdata))
+    (OUTDIR / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
     for ifname in cfgdata.Machines.keys():
         wgconf = parse_to_wg_config(ifname, cfgdata)
         ini = wg_config_to_ini(ifname, wgconf)
-        (Path('output') / ifname).with_suffix('.conf').write_text(ini)
+        (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
 
 
-parseyaml()
+parseyaml('interfaces.yaml')
