@@ -1,4 +1,3 @@
-import itertools
 from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
@@ -49,8 +48,6 @@ def merge_yaml(*filepaths: str) -> dict:
 
 def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
-    prefixlen = cfgdata.DynStartIP.network.prefixlen
-    cnt = itertools.count()
     if not cfgdata.PresharedKey:
         cfgdata.PresharedKey = gen_psk()
     for ifname, ifdata in cfgdata.Machines.items():
@@ -60,8 +57,9 @@ def parse_yaml_config(yaml_contents: dict):
             ifdata.Peer = PeerModel()
         # Set a dynamic Interface address if none specified
         if not ifdata.Interface.Address:
+            cfgdata.Dynamic.StartIP += 1
             ifdata.Interface.Address = IPv4Interface(
-                f"{cfgdata.DynStartIP.ip + next(cnt)}/{prefixlen}"
+                f"{cfgdata.Dynamic.StartIP}/{cfgdata.Dynamic.PrefixLen}"
             )
         # Set the Peer allowed IP to be the same as the Interface address
         # if none specified, but with prefixlen /32.

@@ -1,4 +1,4 @@
-from ipaddress import IPv4Interface
+from ipaddress import IPv4Address, IPv4Interface
 
 from pydantic import BaseModel
 
@@ -36,8 +36,13 @@ class HostModel(BaseModel):
     Peer: PeerModel | None = None
 
 
+class DynamicHost(BaseModel):
+    StartIP: IPv4Address
+    PrefixLen: int
+
+
 class YamlConfig(BaseModel):
-    DynStartIP: IPv4Interface
+    Dynamic: DynamicHost
     PresharedKey: str | None = None
     Machines: dict[str, HostModel]
 
