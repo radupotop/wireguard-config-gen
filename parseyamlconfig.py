@@ -12,7 +12,7 @@ from yaml.loader import SafeLoader
 OUTDIR = Path('output/')
 
 
-def loadyaml(filepath: str):
+def load_yaml(filepath: str):
     """
     Load a YAML file.
     """
@@ -29,12 +29,12 @@ def merge_yaml(*filepaths: str) -> dict:
     """
     merged_data = dict()
     for _fpath in filepaths:
-        _fcontent = loadyaml(_fpath)
+        _fcontent = load_yaml(_fpath)
         merged_data.update(_fcontent)
     return merged_data
 
 
-def parseyaml(yaml_contents: dict):
+def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
     prefixlen = cfgdata.DynStartIP.network.prefixlen
     cnt = itertools.count()
@@ -73,4 +73,4 @@ def parseyaml(yaml_contents: dict):
 
 
 yaml_contents = merge_yaml('interfaces.yaml', 'output/result.yaml')
-parseyaml(yaml_contents)
+parse_yaml_config(yaml_contents)
