@@ -74,7 +74,7 @@ def parse_yaml_config(yaml_contents: dict):
             ifdata.Peer.PublicKey = keypair.public
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
-    pprint(raw_cfgdata)
+    # pprint(raw_cfgdata)
     (OUTDIR / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
     for ifname in cfgdata.Machines.keys():
@@ -87,6 +87,4 @@ yaml_contents = merge_yaml(
     'interfaces.yaml',
     'output/result.yaml',
 )
-pprint(yaml_contents)
-
 parse_yaml_config(yaml_contents)
