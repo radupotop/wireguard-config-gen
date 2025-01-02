@@ -57,10 +57,10 @@ def parse_yaml_config(yaml_contents: dict):
             ifdata.Peer = PeerModel()
         # Set a dynamic Interface address if none specified
         if not ifdata.Interface.Address:
-            cfgdata.Dynamic.StartIP += 1
             ifdata.Interface.Address = IPv4Interface(
                 f"{cfgdata.Dynamic.StartIP}/{cfgdata.Dynamic.PrefixLen}"
             )
+            cfgdata.Dynamic.StartIP += 1
         # Set the Peer allowed IP to be the same as the Interface address
         # if none specified, but with prefixlen /32.
         if not ifdata.Peer.AllowedIPs:
