@@ -9,20 +9,20 @@ def now():
     return str(datetime.now(UTC))
 
 
-def parse_to_wg_config(main_ifname: str, cfgdata: YamlConfig) -> WireguardConfig:
+def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardConfig:
     wgconf = WireguardConfig(
-        Interface=cfgdata.Machines[main_ifname].Interface,
+        Interface=ymlconfig.Machines[machine_name].Interface,
     )
 
-    for ifname, ifdata in cfgdata.Machines.items():
-        if ifname != main_ifname:
+    for ifname, ifdata in ymlconfig.Machines.items():
+        if ifname != machine_name:
             wgconf.Peers[ifname] = ifdata.Peer
 
     # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf
 
 
-def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
+def wg_config_to_ini(machine_name: str, wgconfig: WireguardConfig) -> str:
     """
     This is not ideal but ConfigParser has too many limitations. e.g.:
       * Can't have multiple [Peer] sections with the same name
@@ -37,7 +37,7 @@ def wg_config_to_ini(main_ifname: str, wgconfig: WireguardConfig) -> str:
 
     # Add Interface section
     output += '[Interface]' + sep
-    output += comment + main_ifname + sep
+    output += comment + machine_name + sep
     for key, val in wgconfig.Interface:
         if val:
             output += key + equals + str(val) + sep
