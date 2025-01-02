@@ -17,6 +17,8 @@ def loadyaml(filepath: str):
     Load a YAML file.
     """
     yaml_file = Path(filepath)
+    if not yaml_file.exists():
+        raise RuntimeError(f'Missing file - {filepath}')
     return yaml.load(yaml_file.read_bytes(), Loader=SafeLoader)
 
 
@@ -59,4 +61,4 @@ def parseyaml(filepath: str):
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
 
 
-parseyaml('interfaces.yaml')
+parseyaml('output/result.yaml')
