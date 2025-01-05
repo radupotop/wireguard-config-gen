@@ -52,3 +52,8 @@ def gen_psk():
     # Encode the bytes in base64
     preshared_key = base64.b64encode(random_bytes).decode('utf-8').strip()
     return preshared_key
+
+
+if __name__ == '__main__':
+    print('KEY PAIR: ', gen_keypair())
+    print('PSK: ', gen_psk())
