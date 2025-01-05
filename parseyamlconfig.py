@@ -1,24 +1,21 @@
 from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
+from typing import TextIO
 
 import yaml
 from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, YamlConfig
 from parsewgconfig import parse_to_wg_config, wg_config_to_ini
-from yaml.loader import SafeLoader
 
 OUTDIR = Path('output/')
 
 
-def load_yaml(filepath: str):
+def load_yaml(filebuf: TextIO):
     """
     Load a YAML file.
     """
-    yaml_file = Path(filepath)
-    if not yaml_file.exists():
-        raise RuntimeError(f'Missing file - {filepath}')
-    return yaml.load(yaml_file.read_bytes(), Loader=SafeLoader)
+    return yaml.safe_load(filebuf.read())
 
 
 def recursive_update(dict1, dict2):
@@ -34,14 +31,14 @@ def recursive_update(dict1, dict2):
             dict1[key] = value
 
 
-def merge_yaml(*filepaths: str) -> dict:
+def merge_yaml(filebuf_list: list[TextIO]) -> dict:
     """
     Merge multiple YAML files.
     Latter files will inherit and override the former files.
     """
     merged_data = dict()
-    for _fpath in filepaths:
-        _fcontent = load_yaml(_fpath)
+    for _buf in filebuf_list:
+        _fcontent = load_yaml(_buf)
         recursive_update(merged_data, _fcontent)
     return merged_data
 
