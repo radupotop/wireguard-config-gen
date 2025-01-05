@@ -81,10 +81,3 @@ def parse_yaml_config(yaml_contents: dict):
         wgconf = parse_to_wg_config(ifname, cfgdata)
         ini = wg_config_to_ini(ifname, wgconf)
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
-
-
-yaml_contents = merge_yaml(
-    'interfaces.yaml',
-    'output/result.yaml',
-)
-parse_yaml_config(yaml_contents)
