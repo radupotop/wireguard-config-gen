@@ -44,6 +44,7 @@ class DynamicHost(BaseModel):
 class YamlConfig(BaseModel):
     Dynamic: DynamicHost
     Machines: dict[str, HostModel]
+    PresharedKeyPairs: dict[str, str] = dict()
 
 
 class WireguardConfig(BaseModel):

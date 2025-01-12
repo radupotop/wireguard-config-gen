@@ -1,8 +1,8 @@
 from ipaddress import IPv4Interface
+from itertools import combinations
 from pathlib import Path
 from pprint import pprint
 from typing import TextIO
-from itertools import combinations
 
 import yaml
 from genkeys import gen_keypair, gen_psk
@@ -67,19 +67,21 @@ def parse_yaml_config(yaml_contents: dict):
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
 
+    # This gets us a list of tuples with unique machine combinations. For example:
+    # [(Router, Client1), (Router, Client2), (Client1, Client2)]
+    unique_machine_pairs = map(','.join, sorted(combinations(cfgdata.Machines.keys(), 2)))
+
+    # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
+    # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
+    for pair in unique_machine_pairs:
+        if pair not in cfgdata.PresharedKeyPairs.keys():
+            cfgdata.PresharedKeyPairs[pair] = gen_psk()
+
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     # pprint(raw_cfgdata)
     (OUTDIR / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
-    # This gets us a list of tuples with unique machine combinations. For example:
-    # [(Router, Client1), (Router, Client2), (Client1, Client2)]
-    unique_machine_pairs = list(combinations(cfgdata.Machines.keys(), 2))
-
-    # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
-    # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
-    machine_pairs_psk = {pair: gen_psk() for pair in unique_machine_pairs}
-
     for ifname in cfgdata.Machines.keys():
-        wgconf = parse_to_wg_config(ifname, cfgdata, machine_pairs_psk)
+        wgconf = parse_to_wg_config(ifname, cfgdata)
         ini = wg_config_to_ini(ifname, wgconf)
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
