@@ -66,6 +66,10 @@ def parse_yaml_config(yaml_contents: dict):
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
+        # Create Interface DNS config
+        if not ifdata.Interface.DNS:
+            if cfgdata.Dynamic.DNS:
+                ifdata.Interface.DNS = ",".join(str(ip) for ip in cfgdata.Dynamic.DNS)
 
     if cfgdata.UseUniversalPSK:
         if UNIPSK not in cfgdata.PresharedKeyPairs:
