@@ -45,8 +45,7 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
 
 def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
-    if not cfgdata.PresharedKey:
-        cfgdata.PresharedKey = gen_psk()
+
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()
@@ -62,8 +61,10 @@ def parse_yaml_config(yaml_contents: dict):
         # if none specified, but with prefixlen /32.
         if not ifdata.Peer.AllowedIPs:
             ifdata.Peer.AllowedIPs = [IPv4Interface(ifdata.Interface.Address.ip)]
+        # Each neighbouring peer will use this PSK when talking to this machine.
+        # Thanks @Kaurin for the brilliant contribution!
         if not ifdata.Peer.PresharedKey:
-            ifdata.Peer.PresharedKey = cfgdata.PresharedKey
+            ifdata.Peer.PresharedKey = gen_psk()
         # Generate keypair if none specified
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
