@@ -69,6 +69,10 @@ def parse_yaml_config(yaml_contents: dict):
             keypair = gen_keypair()
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
+        # Create Interface DNS config
+        if not ifdata.Interface.DNS:
+            if cfgdata.Dynamic.DNS:
+                ifdata.Interface.DNS = ",".join(str(ip) for ip in cfgdata.Dynamic.DNS)
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     # pprint(raw_cfgdata)
