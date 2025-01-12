@@ -45,6 +45,7 @@ class YamlConfig(BaseModel):
     Dynamic: DynamicHost
     Machines: dict[str, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()
+    UseUniversalPSK: bool = False
 
 
 class WireguardConfig(BaseModel):

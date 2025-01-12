@@ -3,6 +3,8 @@ from functools import cache
 
 from models import WireguardConfig, YamlConfig
 
+UNIPSK = '_UNIVERSAL_'
+
 
 @cache
 def now():
@@ -18,9 +20,12 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
         if ifname != machine_name:
             wgconf.Peers[ifname] = ifdata.Peer
             # PresharedKey block
-            wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[
-                ','.join(sorted((ifname, machine_name)))
-            ]
+            if ymlconfig.UseUniversalPSK:
+                wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[UNIPSK]
+            else:
+                wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[
+                    ','.join(sorted((ifname, machine_name)))
+                ]
 
     # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf

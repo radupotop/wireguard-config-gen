@@ -7,7 +7,7 @@ from typing import TextIO
 import yaml
 from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, YamlConfig
-from parsewgconfig import parse_to_wg_config, wg_config_to_ini
+from parsewgconfig import UNIPSK, parse_to_wg_config, wg_config_to_ini
 
 OUTDIR = Path('output/')
 
@@ -67,15 +67,21 @@ def parse_yaml_config(yaml_contents: dict):
             ifdata.Interface.PrivateKey = keypair.private
             ifdata.Peer.PublicKey = keypair.public
 
-    # This gets us a list of tuples with unique machine combinations. For example:
-    # [(Router, Client1), (Router, Client2), (Client1, Client2)]
-    unique_machine_pairs = map(','.join, sorted(combinations(cfgdata.Machines.keys(), 2)))
+    if cfgdata.UseUniversalPSK:
+        if UNIPSK not in cfgdata.PresharedKeyPairs:
+            cfgdata.PresharedKeyPairs[UNIPSK] = gen_psk()
+    else:
+        # This gets us a list of tuples with unique machine combinations. For example:
+        # [(Router, Client1), (Router, Client2), (Client1, Client2)]
+        unique_machine_pairs = map(
+            ','.join, sorted(combinations(cfgdata.Machines.keys(), 2))
+        )
 
-    # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
-    # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
-    for pair in unique_machine_pairs:
-        if pair not in cfgdata.PresharedKeyPairs.keys():
-            cfgdata.PresharedKeyPairs[pair] = gen_psk()
+        # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
+        # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
+        for pair in unique_machine_pairs:
+            if pair not in cfgdata.PresharedKeyPairs:
+                cfgdata.PresharedKeyPairs[pair] = gen_psk()
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     # pprint(raw_cfgdata)
