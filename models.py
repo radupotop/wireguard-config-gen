@@ -16,6 +16,7 @@ class InterfaceModel(BaseModel):
     Address: IPv4Interface | None = None
     PrivateKey: str | None = None
     ListenPort: int | None = None
+    DNS: str | None = None # Has to be in the Wireguard conf format. For example: "1.1.1.1, 8.8.8.8"
 
 
 class PeerModel(BaseModel):
@@ -39,6 +40,7 @@ class HostModel(BaseModel):
 class DynamicHost(BaseModel):
     StartIP: IPv4Address
     PrefixLen: int
+    DNS: list[IPv4Address] | None = None
 
 
 class YamlConfig(BaseModel):
