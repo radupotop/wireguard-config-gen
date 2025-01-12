@@ -43,7 +43,6 @@ class DynamicHost(BaseModel):
 
 class YamlConfig(BaseModel):
     Dynamic: DynamicHost
-    PresharedKey: str | None = None
     Machines: dict[str, HostModel]
 
 

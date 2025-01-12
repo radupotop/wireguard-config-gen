@@ -2,6 +2,7 @@ from ipaddress import IPv4Interface
 from pathlib import Path
 from pprint import pprint
 from typing import TextIO
+from itertools import combinations
 
 import yaml
 from genkeys import gen_keypair, gen_psk
@@ -45,8 +46,6 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
 
 def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
-    if not cfgdata.PresharedKey:
-        cfgdata.PresharedKey = gen_psk()
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()
@@ -62,8 +61,6 @@ def parse_yaml_config(yaml_contents: dict):
         # if none specified, but with prefixlen /32.
         if not ifdata.Peer.AllowedIPs:
             ifdata.Peer.AllowedIPs = [IPv4Interface(ifdata.Interface.Address.ip)]
-        if not ifdata.Peer.PresharedKey:
-            ifdata.Peer.PresharedKey = cfgdata.PresharedKey
         # Generate keypair if none specified
         if not ifdata.Interface.PrivateKey:
             keypair = gen_keypair()
@@ -74,7 +71,15 @@ def parse_yaml_config(yaml_contents: dict):
     # pprint(raw_cfgdata)
     (OUTDIR / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
+    # This gets us a list of tuples with unique machine combinations. For example:
+    # [(Router, Client1), (Router, Client2), (Client1, Client2)]
+    unique_machine_pairs = list(combinations(cfgdata.Machines.keys(), 2))
+
+    # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
+    # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
+    machine_pairs_psk = {pair: gen_psk() for pair in unique_machine_pairs}
+
     for ifname in cfgdata.Machines.keys():
-        wgconf = parse_to_wg_config(ifname, cfgdata)
+        wgconf = parse_to_wg_config(ifname, cfgdata, machine_pairs_psk)
         ini = wg_config_to_ini(ifname, wgconf)
         (OUTDIR / ifname).with_suffix('.conf').write_text(ini)

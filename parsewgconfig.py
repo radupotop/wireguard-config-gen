@@ -9,7 +9,7 @@ def now():
     return str(datetime.now(UTC))
 
 
-def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardConfig:
+def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig, unique_machine_pair_psk: dict) -> WireguardConfig:
     wgconf = WireguardConfig(
         Interface=ymlconfig.Machines[machine_name].Interface,
     )
@@ -17,6 +17,12 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
     for ifname, ifdata in ymlconfig.Machines.items():
         if ifname != machine_name:
             wgconf.Peers[ifname] = ifdata.Peer
+
+            # PresharedKey block
+            try:
+                wgconf.Peers[ifname].PresharedKey = unique_machine_pair_psk[(ifname, machine_name)]
+            except KeyError:
+                wgconf.Peers[ifname].PresharedKey = unique_machine_pair_psk[(machine_name, ifname)]
 
     # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf
