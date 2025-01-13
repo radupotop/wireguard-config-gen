@@ -22,3 +22,7 @@ Machines:
   ClientPeer1: {}
   ClientPeer2: {}
   ClientPeer3: {}
+# This will store PresharedKey pairs and should not be manually edited.
+PresharedKeyPairs: {}
+# Use the same PSK on all peers for debugging purposes. False by default
+UseUniversalPSK: false
