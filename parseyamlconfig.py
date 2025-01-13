@@ -78,7 +78,7 @@ def parse_yaml_config(yaml_contents: dict):
         # This gets us a list of tuples with unique machine combinations. For example:
         # [(Router, Client1), (Router, Client2), (Client1, Client2)]
         unique_machine_pairs = map(
-            ','.join, sorted(combinations(cfgdata.Machines.keys(), 2))
+            ','.join, combinations(sorted(cfgdata.Machines.keys()), 2)
         )
 
         # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
