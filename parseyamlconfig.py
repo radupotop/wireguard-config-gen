@@ -75,14 +75,13 @@ def parse_yaml_config(yaml_contents: dict):
         if UNIPSK not in cfgdata.PresharedKeyPairs:
             cfgdata.PresharedKeyPairs[UNIPSK] = gen_psk()
     else:
-        # This gets us a list of tuples with unique machine combinations. For example:
-        # [(Router, Client1), (Router, Client2), (Client1, Client2)]
+        # This gets us a list of strings with unique machine combinations.
+        # Each pair is sorted alphabetically. For example:
+        # ["Client1,Router", "Client2,Router", "Client1,Client2"]
         unique_machine_pairs = map(
             ','.join, combinations(sorted(cfgdata.Machines.keys()), 2)
         )
 
-        # After we get the unique pairing list, we can then build a dict with a distinct PSK per unique pair. Example:
-        # { (Router, Client1): "psk1...", (Router, Client2): "psk2...", (Client1, Client2): "psk3..."}
         for pair in unique_machine_pairs:
             if pair not in cfgdata.PresharedKeyPairs:
                 cfgdata.PresharedKeyPairs[pair] = gen_psk()
