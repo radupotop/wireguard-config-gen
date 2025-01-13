@@ -79,7 +79,7 @@ def parse_yaml_config(yaml_contents: dict):
         # Each pair is sorted alphabetically. For example:
         # ["Client1,Router", "Client2,Router", "Client1,Client2"]
         unique_machine_pairs = map(
-            ','.join, map(sorted, combinations(cfgdata.Machines.keys(), 2))
+            ','.join, combinations(sorted(cfgdata.Machines.keys()), 2)
         )
 
         for pair in unique_machine_pairs:
