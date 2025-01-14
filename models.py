@@ -1,7 +1,6 @@
 from ipaddress import IPv4Address, IPv4Interface
 
 from pydantic import BaseModel
-from utils import parse_version
 
 
 class Keypair(BaseModel):
@@ -46,7 +45,7 @@ class DynamicHost(BaseModel):
 
 
 class YamlConfig(BaseModel):
-    Version: str = parse_version()
+    Version: str = 'major.minor.patch'
     Dynamic: DynamicHost
     Machines: dict[str, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()

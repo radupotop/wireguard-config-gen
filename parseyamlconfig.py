@@ -8,6 +8,7 @@ import yaml
 from genkeys import gen_keypair, gen_psk
 from models import InterfaceModel, PeerModel, YamlConfig
 from parsewgconfig import UNIPSK, parse_to_wg_config, wg_config_to_ini
+from utils import parse_version
 
 OUTDIR = Path('output/')
 
@@ -46,6 +47,7 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
 
 def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
+    cfgdata.Version = parse_version()
 
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
