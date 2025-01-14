@@ -1,14 +1,7 @@
-from datetime import UTC, datetime
-from functools import cache
-
 from models import WireguardConfig, YamlConfig
+from utils import now, parse_version
 
 UNIPSK = '_UNIVERSAL_'
-
-
-@cache
-def now():
-    return str(datetime.now(UTC))
 
 
 def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardConfig:
@@ -42,7 +35,9 @@ def wg_config_to_ini(machine_name: str, wgconfig: WireguardConfig) -> str:
     sep = '\n'
     comment = '## '
     equals = ' = '
-    output = comment + 'Generated ' + now() + sep + sep
+    output = (comment + 'Generated: ' + now() + sep) + (
+        comment + 'From Version: ' + parse_version() + sep + sep
+    )
 
     # Add Interface section
     output += '[Interface]' + sep

@@ -46,6 +46,7 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
 
 def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
+
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()

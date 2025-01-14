@@ -1,6 +1,7 @@
 from ipaddress import IPv4Address, IPv4Interface
 
 from pydantic import BaseModel
+from utils import parse_version
 
 
 class Keypair(BaseModel):
@@ -16,7 +17,8 @@ class InterfaceModel(BaseModel):
     Address: IPv4Interface | None = None
     PrivateKey: str | None = None
     ListenPort: int | None = None
-    DNS: str | None = None # Has to be in the Wireguard conf format. For example: "1.1.1.1, 8.8.8.8"
+    # Has to be in the Wireguard conf format. For example: "1.1.1.1, 8.8.8.8"
+    DNS: str | None = None
 
 
 class PeerModel(BaseModel):
@@ -44,6 +46,7 @@ class DynamicHost(BaseModel):
 
 
 class YamlConfig(BaseModel):
+    Version: str = parse_version()
     Dynamic: DynamicHost
     Machines: dict[str, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()
