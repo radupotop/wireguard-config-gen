@@ -10,8 +10,6 @@ from models import InterfaceModel, PeerModel, YamlConfig
 from parsewgconfig import UNIPSK, parse_to_wg_config, wg_config_to_ini
 from utils import parse_version
 
-OUTDIR = Path('output/')
-
 
 def load_yaml(filebuf: TextIO):
     """
@@ -45,7 +43,7 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
     return merged_data
 
 
-def parse_yaml_config(yaml_contents: dict):
+def parse_yaml_config(yaml_contents: dict, outdir: Path):
     cfgdata = YamlConfig.model_validate(yaml_contents)
     cfgdata.Version = parse_version()
 
@@ -91,9 +89,9 @@ def parse_yaml_config(yaml_contents: dict):
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     # pprint(raw_cfgdata)
-    (OUTDIR / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
+    (outdir / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
     for ifname in cfgdata.Machines.keys():
         wgconf = parse_to_wg_config(ifname, cfgdata)
         ini = wg_config_to_ini(ifname, wgconf)
-        (OUTDIR / ifname).with_suffix('.conf').write_text(ini)
+        (outdir / ifname).with_suffix('.conf').write_text(ini)
