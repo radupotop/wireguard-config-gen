@@ -52,6 +52,7 @@ class YamlConfig(BaseModel):
     Machines: dict[HostName, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()
     UseUniversalPSK: bool = False
+    Outdir: str = 'output/'
 
 
 class WireguardConfig(BaseModel):

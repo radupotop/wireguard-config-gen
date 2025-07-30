@@ -42,9 +42,11 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
     return merged_data
 
 
-def parse_yaml_config(yaml_contents: dict, outdir: Path):
+def parse_yaml_config(yaml_contents: dict):
     cfgdata = YamlConfig.model_validate(yaml_contents)
     cfgdata.Version = parse_version()
+    outdir = Path(cfgdata.Outdir)
+    outdir.mkdir(exist_ok=True)
 
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
