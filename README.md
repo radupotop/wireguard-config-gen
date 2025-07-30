@@ -24,3 +24,14 @@ configuration, and the individual `.conf` files for each machine.
 This will merge both the `interfaces.yaml` and the `output/result.yaml` template files
 into the final `output/result.yaml`.  
 This is used to update an existing network configuration.
+
+### Multiple subnets
+
+Multiple configurations can be managed in parallel, serving different sets of clients,
+living on different subnets.
+
+    python run.py subnet2.yaml -d subnet2/
+
+Then update with:
+
+    python run.py subnet2.yaml subnet2/result.yaml -d subnet2/
