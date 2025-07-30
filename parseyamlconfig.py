@@ -42,12 +42,21 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
     return merged_data
 
 
-def parse_yaml_config(yaml_contents: dict):
+def initial_parse_yaml_config(yaml_contents: dict) -> tuple[YamlConfig, Path]:
+    """
+    Do minimal amounts of parsing before populating the YAML config model.
+    """
     cfgdata = YamlConfig.model_validate(yaml_contents)
     cfgdata.Version = parse_version()
     outdir = Path(cfgdata.Outdir)
     outdir.mkdir(exist_ok=True)
+    return cfgdata, outdir
 
+
+def populate_yaml_config(cfgdata: YamlConfig, outdir: Path):
+    """
+    Fully populate the YAML config model.
+    """
     for ifname, ifdata in cfgdata.Machines.items():
         if not ifdata.Interface:
             ifdata.Interface = InterfaceModel()

@@ -1,6 +1,6 @@
 import argparse
 
-from parseyamlconfig import merge_yaml, parse_yaml_config
+from parseyamlconfig import initial_parse_yaml_config, merge_yaml, populate_yaml_config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Process template YAML files')
@@ -13,4 +13,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     yaml_contents = merge_yaml(args.yaml_files)
-    parse_yaml_config(yaml_contents)
+    yamlcfg, outdir = initial_parse_yaml_config(yaml_contents)
+    populate_yaml_config(yamlcfg, outdir)
