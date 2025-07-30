@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '-d',
         '--output_dir',
-        type=str,
+        type=Path,
         default='output/',
         help='Output directory for the conf files',
     )
