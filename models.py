@@ -2,6 +2,8 @@ from ipaddress import IPv4Address, IPv4Interface
 
 from pydantic import BaseModel
 
+HostName = str
+
 
 class Keypair(BaseModel):
     """
@@ -47,11 +49,15 @@ class DynamicHost(BaseModel):
 class YamlConfig(BaseModel):
     Version: str = 'major.minor.patch'
     Dynamic: DynamicHost
-    Machines: dict[str, HostModel]
+    Machines: dict[HostName, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()
     UseUniversalPSK: bool = False
 
 
 class WireguardConfig(BaseModel):
+    """
+    Intermediary model which is very close to the final Wireguard conf file format.
+    """
+
     Interface: InterfaceModel
     Peers: dict[str, PeerModel] = dict()

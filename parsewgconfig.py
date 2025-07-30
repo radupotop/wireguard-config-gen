@@ -5,6 +5,9 @@ UNIPSK = '_UNIVERSAL_'
 
 
 def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardConfig:
+    """
+    Parse the initial YAML config into an intermediary model.
+    """
     wgconf = WireguardConfig(
         Interface=ymlconfig.Machines[machine_name].Interface,
     )
