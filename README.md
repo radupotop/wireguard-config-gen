@@ -8,6 +8,17 @@ Requirements:
 * pydantic
 * pyyaml
 
+## Installation
+
+    uv venv --seed
+    uv sync
+    uv run python run.py ...
+
+Or source the venv and run directly with:
+
+    source .venv/bin/activate
+    python run.py ...
+
 ## Usage
 
 ### First run
