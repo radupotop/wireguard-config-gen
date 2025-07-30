@@ -30,8 +30,10 @@ This is used to update an existing network configuration.
 Multiple configurations can be managed in parallel, serving different sets of clients,
 living on different subnets.
 
-    python run.py subnet2.yaml -d subnet2/
+Edit your YAML configuration and set `Outdir: subnet2/`
+
+    python run.py subnet2.yaml  # will write to subnet2/
 
 Then update with:
 
-    python run.py subnet2.yaml subnet2/result.yaml -d subnet2/
+    python run.py subnet2.yaml subnet2/result.yaml

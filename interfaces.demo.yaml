@@ -26,3 +26,4 @@ Machines:
 PresharedKeyPairs: {}
 # Use the same PSK on all peers for debugging purposes. False by default
 UseUniversalPSK: false
+Outdir: output/
