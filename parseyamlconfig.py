@@ -1,7 +1,6 @@
 from ipaddress import IPv4Interface
 from itertools import combinations
 from pathlib import Path
-from pprint import pprint
 from typing import TextIO
 
 import yaml
@@ -96,4 +95,5 @@ def parse_yaml_config(yaml_contents: dict, outdir: Path):
         ini = wg_config_to_ini(ifname, wgconf)
         (outdir / ifname).with_suffix('.conf').write_text(ini)
 
-    print('Wrote to dir:', outdir)
+    print('Wrote to dir:')
+    print(outdir.resolve())

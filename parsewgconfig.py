@@ -60,5 +60,5 @@ def wg_config_to_ini(machine_name: str, wgconfig: WireguardConfig) -> str:
                 output += key + equals + _val + sep
         output += sep
 
-    print(output)
+    # print(output)
     return output
