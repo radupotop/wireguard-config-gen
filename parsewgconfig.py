@@ -1,5 +1,4 @@
-from pprint import pprint
-
+# from pprint import pprint
 from models import TopologyType, WireguardConfig, YamlConfig
 from utils import now, parse_version
 
@@ -31,7 +30,7 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
                     ','.join(sorted((ifname, machine_name)))
                 ]
 
-    pprint(wgconf.model_dump(mode='json', exclude_none=True))
+    # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf
 
 
