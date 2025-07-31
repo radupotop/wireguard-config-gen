@@ -59,7 +59,7 @@ class YamlConfig(BaseModel):
     PresharedKeyPairs: dict[str, str] = dict()
     UseUniversalPSK: bool = False
     Outdir: str = 'output/'
-    Topology: TopologyType = TopologyType.mesh
+    Topology: TopologyType = TopologyType.star
 
 
 class WireguardConfig(BaseModel):

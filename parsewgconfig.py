@@ -14,7 +14,7 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
     this_peer = ymlconfig.Machines[machine_name].Peer
     wgconf = WireguardConfig(Interface=this_interface)
 
-    # Mesh topology is the default, which is many to many
+    # Start with the mesh topology, which is many to many
     machine_items = ymlconfig.Machines.items()
     # Only include Server peers for star topology Clients
     if ymlconfig.Topology == TopologyType.star and not this_peer.Endpoint:
