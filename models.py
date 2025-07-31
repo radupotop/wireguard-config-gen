@@ -1,8 +1,14 @@
+from enum import Enum
 from ipaddress import IPv4Address, IPv4Interface
 
 from pydantic import BaseModel
 
 HostName = str
+
+
+class TopologyType(Enum):
+    mesh = 'mesh'  # Any peer can reach any other peer
+    star = 'star'  # Client peers can only reach Server peers, Server peers can receive from any Client peer
 
 
 class Keypair(BaseModel):
@@ -53,6 +59,7 @@ class YamlConfig(BaseModel):
     PresharedKeyPairs: dict[str, str] = dict()
     UseUniversalPSK: bool = False
     Outdir: str = 'output/'
+    Topology: TopologyType = TopologyType.mesh
 
 
 class WireguardConfig(BaseModel):
