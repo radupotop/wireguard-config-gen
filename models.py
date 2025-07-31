@@ -7,8 +7,16 @@ HostName = str
 
 
 class TopologyType(Enum):
-    mesh = 'mesh'  # Any peer can reach any other peer
-    star = 'star'  # Client peers can only reach Server peers, Server peers can reach any other peer
+    """
+    In mesh mode:
+        Any peer can reach any other peer.
+    In star mode:
+        Client peers can only reach Server peers (via the public endpoint).
+        Server peers can receive from any other peer.
+    """
+
+    mesh = 'mesh'
+    star = 'star'
 
 
 class Keypair(BaseModel):
