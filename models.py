@@ -8,7 +8,7 @@ HostName = str
 
 class TopologyType(Enum):
     mesh = 'mesh'  # Any peer can reach any other peer
-    star = 'star'  # Client peers can only reach Server peers, Server peers can receive from any Client peer
+    star = 'star'  # Client peers can only reach Server peers, Server peers can reach any other peer
 
 
 class Keypair(BaseModel):
@@ -68,4 +68,4 @@ class WireguardConfig(BaseModel):
     """
 
     Interface: InterfaceModel
-    Peers: dict[str, PeerModel] = dict()
+    Peers: dict[HostName, PeerModel] = dict()
