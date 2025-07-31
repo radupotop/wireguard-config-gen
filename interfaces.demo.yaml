@@ -26,4 +26,7 @@ Machines:
 PresharedKeyPairs: {}
 # Use the same PSK on all peers for debugging purposes. False by default
 UseUniversalPSK: false
+# The output folder for the final Wireguard conf files
 Outdir: output/
+# Specify star or mesh topology
+Topology: star

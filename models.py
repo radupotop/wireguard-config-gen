@@ -13,6 +13,7 @@ class TopologyType(Enum):
     In star mode:
         Client peers can only reach Server peers (via the public endpoint).
         Server peers can receive from any other peer.
+    The default is star mode.
     """
 
     mesh = 'mesh'
