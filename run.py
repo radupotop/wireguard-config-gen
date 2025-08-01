@@ -13,5 +13,5 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     yaml_contents = merge_yaml(args.yaml_files)
-    yamlcfg, outdir = initial_parse_yaml_config(yaml_contents)
-    populate_yaml_config(yamlcfg, outdir)
+    yamlcfg = initial_parse_yaml_config(yaml_contents)
+    populate_yaml_config(yamlcfg)

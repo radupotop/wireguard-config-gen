@@ -1,5 +1,6 @@
 from enum import Enum
 from ipaddress import IPv4Address, IPv4Interface
+from pathlib import Path
 
 from pydantic import BaseModel
 
@@ -63,11 +64,11 @@ class DynamicHost(BaseModel):
 
 class YamlConfig(BaseModel):
     Version: str = 'major.minor.patch'
+    Outdir: Path = Path('output/')
     Dynamic: DynamicHost
     Machines: dict[HostName, HostModel]
     PresharedKeyPairs: dict[str, str] = dict()
     UseUniversalPSK: bool = False
-    Outdir: str = 'output/'
     Topology: TopologyType = TopologyType.star
 
 
