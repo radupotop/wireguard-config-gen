@@ -36,7 +36,7 @@ This will merge both the `interfaces.yaml` and the `output/result.yaml` template
 into the final `output/result.yaml`.  
 This is used to update an existing network configuration.
 
-## Strip config
+### Strip config
 
 In order to obtain a config file ready to be used directly by `wg`
 (rather than through the `wg-quick` script), the following command can be used:
