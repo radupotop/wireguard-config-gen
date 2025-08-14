@@ -1,6 +1,6 @@
 # from pprint import pprint
 
-from models import TopologyType, WireguardConfig, YamlConfig
+from models import WireguardConfig, YamlConfig
 from utils import now, parse_version
 
 UNIPSK = '_UNIVERSAL_'
@@ -21,13 +21,13 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
     )
 
     # Only include Server peers for star topology Clients
-    if ymlconfig.Topology == TopologyType.star and not this_machine.Peer.Endpoint:
-        other_machines = filter(lambda m: m[1].Peer.Endpoint, other_machines)
+    if ymlconfig.Topology.is_star and not this_machine.is_server:
+        other_machines = filter(lambda m: m[1].is_server, other_machines)
 
     for ifname, ifdata in other_machines:
         wgconf.Peers[ifname] = ifdata.Peer.model_copy(deep=True)
         # Omit all peer endpoints for this server
-        if this_machine.IsPassive:
+        if this_machine.IsPassive and this_machine.is_server:
             wgconf.Peers[ifname].Endpoint = None
         # PresharedKey block
         if ymlconfig.UseUniversalPSK:

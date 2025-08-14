@@ -20,6 +20,10 @@ class TopologyType(Enum):
     mesh = 'mesh'
     star = 'star'
 
+    @property
+    def is_star(self):
+        return self.value == 'star'
+
 
 class Keypair(BaseModel):
     """
@@ -57,6 +61,10 @@ class HostModel(BaseModel):
     # Omit all peer endpoints for this server
     # This becomes a passive server which relies on its clients to connect first.
     IsPassive: bool = False
+
+    @property
+    def is_server(self):
+        return bool(self.Peer.Endpoint)
 
 
 class DynamicHost(BaseModel):
