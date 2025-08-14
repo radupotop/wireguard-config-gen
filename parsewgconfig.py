@@ -14,24 +14,28 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
     wgconf = WireguardConfig(Interface=this_machine.Interface)
 
     # Start with the mesh topology, which is many to many
-    machine_items = ymlconfig.Machines.items()
+    # Filter out self
+    other_machines = filter(
+        lambda m: m[0] != machine_name,
+        ymlconfig.Machines.items(),
+    )
+
     # Only include Server peers for star topology Clients
     if ymlconfig.Topology == TopologyType.star and not this_machine.Peer.Endpoint:
-        machine_items = filter(lambda n: n[1].Peer.Endpoint, machine_items)
+        other_machines = filter(lambda m: m[1].Peer.Endpoint, other_machines)
 
-    for ifname, ifdata in machine_items:
-        if ifname != machine_name:
-            wgconf.Peers[ifname] = ifdata.Peer.model_copy(deep=True)
-            # Omit all peer endpoints for this server
-            if this_machine.IsPassive:
-                wgconf.Peers[ifname].Endpoint = None
-            # PresharedKey block
-            if ymlconfig.UseUniversalPSK:
-                wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[UNIPSK]
-            else:
-                wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[
-                    ','.join(sorted((ifname, machine_name)))
-                ]
+    for ifname, ifdata in other_machines:
+        wgconf.Peers[ifname] = ifdata.Peer.model_copy(deep=True)
+        # Omit all peer endpoints for this server
+        if this_machine.IsPassive:
+            wgconf.Peers[ifname].Endpoint = None
+        # PresharedKey block
+        if ymlconfig.UseUniversalPSK:
+            wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[UNIPSK]
+        else:
+            wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[
+                ','.join(sorted((ifname, machine_name)))
+            ]
 
     # pprint(wgconf.model_dump(mode='json', exclude_none=True))
     return wgconf
