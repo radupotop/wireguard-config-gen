@@ -3,10 +3,11 @@ from itertools import combinations
 from typing import TextIO
 
 import yaml
-from genkeys import gen_keypair, gen_psk
-from models import InterfaceModel, PeerModel, YamlConfig
-from parsewgconfig import UNIPSK, parse_to_wg_config, wg_config_to_ini
-from utils import parse_version
+
+from wgconf.genkeys import gen_keypair, gen_psk
+from wgconf.models import InterfaceModel, PeerModel, YamlConfig
+from wgconf.parsewgconfig import UNIPSK, parse_to_wg_config, wg_config_to_ini
+from wgconf.utils import parse_version
 
 
 def load_yaml(filebuf: TextIO):

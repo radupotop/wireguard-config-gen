@@ -1,7 +1,7 @@
 # from pprint import pprint
 
-from models import WireguardConfig, YamlConfig
-from utils import now, parse_version
+from wgconf.models import WireguardConfig, YamlConfig
+from wgconf.utils import now, parse_version
 
 UNIPSK = '_UNIVERSAL_'
 

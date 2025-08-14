@@ -1,6 +1,10 @@
 import argparse
 
-from parseyamlconfig import initial_parse_yaml_config, merge_yaml, populate_yaml_config
+from wgconf.parseyamlconfig import (
+    initial_parse_yaml_config,
+    merge_yaml,
+    populate_yaml_config,
+)
 
 
 def runall():

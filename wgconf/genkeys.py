@@ -3,7 +3,8 @@ import os
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey
-from models import Keypair
+
+from wgconf.models import Keypair
 
 
 def gen_keypair() -> Keypair:
