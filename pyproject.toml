@@ -29,5 +29,5 @@ push = true
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['version = "{version}"']
 
-# [tool.setuptools]
-# packages = ["wireguardconfgen"]
+[tool.setuptools]
+py-modules = ["wgconf"]
