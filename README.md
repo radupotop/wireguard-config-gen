@@ -10,9 +10,9 @@ Requirements:
 
 ## Installation
 
-    uv venv --seed
+    uv venv --seed --clear
     uv sync
-    uv run python run.py ...
+    uv run run.py ...
 
 Or source the venv and run directly with:
 
