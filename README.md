@@ -36,14 +36,15 @@ This will merge both the `interfaces.yaml` and the `output/result.yaml` template
 into the final `output/result.yaml`.  
 This is used to update an existing network configuration.
 
-## Strip Config
+## Strip config
 
 In order to obtain a config file ready to be used directly by `wg`
 (rather than through the `wg-quick` script), the following command can be used:
 
-    wg syncconf wg0 <(exec wg-quick strip wg0)
+    wg syncconf wg0 <(wg-quick strip wg0)
 
-This removes the Address and DNS from the Interface section.
+This removes the Address and DNS from the Interface section.  
+This is useful on OpenWRT hosts, where wg-quick is missing.
 
 ### Multiple subnets
 
@@ -58,7 +59,7 @@ Then update with:
 
     python run.py subnet2.yaml subnet2/result.yaml
 
-### Passive Servers
+### Passive servers
 
 Servers can be configured as passive with the `IsPassive: true` directive 
 placed directly under the machine name in `interfaces.yaml`.
