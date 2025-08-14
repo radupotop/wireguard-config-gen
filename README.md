@@ -36,6 +36,15 @@ This will merge both the `interfaces.yaml` and the `output/result.yaml` template
 into the final `output/result.yaml`.  
 This is used to update an existing network configuration.
 
+## Strip Config
+
+In order to obtain a config file ready to be used directly by `wg`
+(rather than through the `wg-quick` script), the following command can be used:
+
+    wg syncconf wg0 <(exec wg-quick strip wg0)
+
+This removes the Address and DNS from the Interface section.
+
 ### Multiple subnets
 
 Multiple configurations can be managed in parallel, serving different sets of clients,
