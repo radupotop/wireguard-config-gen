@@ -1,3 +1,7 @@
+## 0.7.1
+
+- Move codebase to a proper Python module
+
 ## 0.7.0
 
 - Added the option to have declare a server machine as **passive**:
