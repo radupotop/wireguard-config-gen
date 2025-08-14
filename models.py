@@ -54,6 +54,9 @@ class PeerModel(BaseModel):
 class HostModel(BaseModel):
     Interface: InterfaceModel | None = None
     Peer: PeerModel | None = None
+    # Omit all peer endpoints for this server
+    # This becomes a passive server which relies on its clients to connect first.
+    IsPassive: bool = False
 
 
 class DynamicHost(BaseModel):

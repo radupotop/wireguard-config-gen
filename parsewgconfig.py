@@ -1,4 +1,5 @@
 # from pprint import pprint
+
 from models import TopologyType, WireguardConfig, YamlConfig
 from utils import now, parse_version
 
@@ -9,19 +10,21 @@ def parse_to_wg_config(machine_name: str, ymlconfig: YamlConfig) -> WireguardCon
     """
     Parse the initial YAML config into an intermediary model.
     """
-    this_interface = ymlconfig.Machines[machine_name].Interface
-    this_peer = ymlconfig.Machines[machine_name].Peer
-    wgconf = WireguardConfig(Interface=this_interface)
+    this_machine = ymlconfig.Machines[machine_name]
+    wgconf = WireguardConfig(Interface=this_machine.Interface)
 
     # Start with the mesh topology, which is many to many
     machine_items = ymlconfig.Machines.items()
     # Only include Server peers for star topology Clients
-    if ymlconfig.Topology == TopologyType.star and not this_peer.Endpoint:
+    if ymlconfig.Topology == TopologyType.star and not this_machine.Peer.Endpoint:
         machine_items = filter(lambda n: n[1].Peer.Endpoint, machine_items)
 
     for ifname, ifdata in machine_items:
         if ifname != machine_name:
-            wgconf.Peers[ifname] = ifdata.Peer
+            wgconf.Peers[ifname] = ifdata.Peer.model_copy(deep=True)
+            # Omit all peer endpoints for this server
+            if this_machine.IsPassive:
+                wgconf.Peers[ifname].Endpoint = None
             # PresharedKey block
             if ymlconfig.UseUniversalPSK:
                 wgconf.Peers[ifname].PresharedKey = ymlconfig.PresharedKeyPairs[UNIPSK]
