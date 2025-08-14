@@ -2,7 +2,11 @@ import argparse
 
 from parseyamlconfig import initial_parse_yaml_config, merge_yaml, populate_yaml_config
 
-if __name__ == '__main__':
+
+def runall():
+    """
+    Parse args and run the entire script.
+    """
     parser = argparse.ArgumentParser(description='Process template YAML files')
     parser.add_argument(
         'yaml_files',
