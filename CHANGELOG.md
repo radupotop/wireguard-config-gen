@@ -1,3 +1,7 @@
+## 0.7.2
+
+- Resolve outdir
+
 ## 0.7.1
 
 - Move codebase to a proper Python module
