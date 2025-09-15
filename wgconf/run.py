@@ -21,5 +21,5 @@ def runall():
 
     args = parser.parse_args()
     yaml_contents = merge_yaml(args.yaml_files)
-    yamlcfg = initial_parse_yaml_config(yaml_contents)
-    populate_yaml_config(yamlcfg)
+    yamlcfg, outdir = initial_parse_yaml_config(yaml_contents)
+    populate_yaml_config(yamlcfg, outdir)

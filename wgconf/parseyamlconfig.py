@@ -1,5 +1,6 @@
 from ipaddress import IPv4Interface
 from itertools import combinations
+from pathlib import Path
 from typing import TextIO
 
 import yaml
@@ -42,17 +43,18 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
     return merged_data
 
 
-def initial_parse_yaml_config(yaml_contents: dict) -> YamlConfig:
+def initial_parse_yaml_config(yaml_contents: dict) -> tuple[YamlConfig, Path]:
     """
     Do minimal amounts of parsing before populating the YAML config model.
     """
     cfgdata = YamlConfig.model_validate(yaml_contents)
     cfgdata.Version = parse_version()
-    cfgdata.Outdir.mkdir(exist_ok=True)
-    return cfgdata
+    outdir = cfgdata.Outdir.expanduser().resolve()
+    outdir.mkdir(exist_ok=True)
+    return cfgdata, outdir
 
 
-def populate_yaml_config(cfgdata: YamlConfig):
+def populate_yaml_config(cfgdata: YamlConfig, outdir: Path):
     """
     Fully populate the YAML config model.
     """
@@ -98,7 +100,6 @@ def populate_yaml_config(cfgdata: YamlConfig):
 
     raw_cfgdata = cfgdata.model_dump(mode='json', exclude_none=True)
     # pprint(raw_cfgdata)
-    outdir = cfgdata.Outdir
     (outdir / 'result.yaml').write_text(yaml.dump(raw_cfgdata))
 
     for ifname in cfgdata.Machines.keys():
@@ -107,4 +108,4 @@ def populate_yaml_config(cfgdata: YamlConfig):
         (outdir / ifname).with_suffix('.conf').write_text(ini)
 
     print('Wrote to dir:')
-    print(outdir.resolve())
+    print(outdir)
