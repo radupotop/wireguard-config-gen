@@ -46,6 +46,8 @@ def merge_yaml(filebuf_list: list[TextIO]) -> dict:
 def initial_parse_yaml_config(yaml_contents: dict) -> tuple[YamlConfig, Path]:
     """
     Do minimal amounts of parsing before populating the YAML config model.
+    Don't overwrite the resulting Outdir with the resolved path, as it would
+    prevent the user from moving the script around.
     """
     cfgdata = YamlConfig.model_validate(yaml_contents)
     cfgdata.Version = parse_version()
