@@ -70,3 +70,9 @@ Its peers section will have no configured endpoints initially, they will only ge
 This has a few main advantages: i.e. not having to rely on resolving the endpoint
 hostnames when `wg-quick` starts up, or the server not initiating any connection at all,
 i.e. being completely silent.
+
+## Code Tour
+
+See [Repository Guidelines](AGENTS.md) for project structure, workflow commands, and review expectations before opening a pull request.
+
+Want the quick architecture rundown? Start with [Code Overview](CODEBASE.md).
